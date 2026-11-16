@@ -8,6 +8,7 @@ const port = Number(process.env.PORT) || 3000;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  max: 1
 });
 
 app.use(cors());
@@ -31,6 +32,10 @@ app.get("/api/posts", async (_req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server berjalan di http://localhost:${port}`);
-});
+if(!process.env.VERCEL) {
+    app.listen(port, () => {
+      console.log(`Server berjalan di http://localhost:${port}`);
+    });
+}
+
+export default app;
