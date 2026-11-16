@@ -11,3 +11,10 @@ VALUES (
         "Bagaimana cara membangun LMS",
         "Bangun LMS dengan menggunakan React dan Express JS"
     );
+
+INSERT INTO
+    post (title, description)
+VALUES (
+        "Bagaimana cara membangun Frontend",
+        "Bangun Frontend dengan menggunakan React dan TypeScript"
+    );
