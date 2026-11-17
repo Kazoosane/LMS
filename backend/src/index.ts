@@ -64,25 +64,32 @@ app.get('/api/posts/:id', async(_req, res) => {
     try {
         const id: number = Number(_req.params.id);
 
+        const result = await pool.query(
+            "SELECT title, description, created_at FROM post WHERE id = $1",
+            [id]
+        )
+
         if(!id || typeof id !== 'number' || id < 1) {
             res.status(400).json({
                 message: "id tidak valid."
             })
         }
 
-        const result = await pool.query(
-            "SELECT title, description, created_at FROM post WHERE id = $1",
-            [id]
-        )
+        if(!result || result.rowCount === 0) {
+            res.status(404).json({
+                message: "kursus tidak ditemukan."
+            })
+        }
+
         
         res.json({
-            message: "berhasil melihat detail posts",
+            message: "berhasil melihat detail kursus.",
             data: result.rows[0]
         })
     } catch(error) {
-        console.error("Gagal melihat detail posts");
+        console.error("Gagal melihat detail kursus.");
         res.status(500).json({
-            message: "gagal melihat detail posts"
+            message: "gagal melihat detail kursus"
         })
 
     }
