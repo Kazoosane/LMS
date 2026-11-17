@@ -60,6 +60,34 @@ app.post("/api/posts", async(_req, res) => {
     }
 })
 
+app.get('/api/posts/:id', async(_req, res) => {
+    try {
+        const id: number = Number(_req.params.id);
+
+        if(!id || typeof id !== 'number' || id < 1) {
+            res.status(400).json({
+                message: "id tidak valid."
+            })
+        }
+
+        const result = await pool.query(
+            "SELECT title, description, created_at FROM post WHERE id = $1",
+            [id]
+        )
+        
+        res.json({
+            message: "berhasil melihat detail posts",
+            data: result.rows[0]
+        })
+    } catch(error) {
+        console.error("Gagal melihat detail posts");
+        res.status(500).json({
+            message: "gagal melihat detail posts"
+        })
+
+    }
+})
+
 if(!process.env.VERCEL) {
     app.listen(port, () => {
       console.log(`Server berjalan di http://localhost:${port}`);
