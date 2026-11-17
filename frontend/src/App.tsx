@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 type Post = {
     id: number,
     title: string,
-    description: string | null
+    description: string | null,
+    created_at: string
 }
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
@@ -39,6 +40,9 @@ export default function App() {
                 <div className="flex gap-4">
                     {posts.map((post) => (
                         <article key={post.id} className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                            <small id="post-created-at">
+                                {post.created_at.slice(0, 10) ?? ""}
+                            </small>
                             <h2 className="text-xl font-semibold text-slate-900">
                                 {post.title}
                             </h2>
