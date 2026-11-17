@@ -16,21 +16,49 @@ app.use(express.json());
 
 // Cek server hidup
 app.get("/", (_req, res) => {
-  res.json({ status: "ok", pesan: "Backend berjalan" });
+    res.json({
+        message: "Backend berjalan"
+    });
 });
 
 // Ambil semua produk dari database
 app.get("/api/posts", async (_req, res) => {
   try {
-    const hasil = await pool.query(
-      "SELECT id, title, description FROM post  "
+    const result = await pool.query(
+      "SELECT id, title, description, created_at FROM post"
     );
-    res.json(hasil.rows);
+    res.json(result.rows);
   } catch (error) {
-    console.error("Gagal mengambil data produk:", error);
-    res.status(500).json({ pesan: "Gagal mengambil data produk" });
+    console.error("Gagal mengambil data kursus:", error);
+    res.status(500).json({
+        message: "gagal mengambil data kursus"
+    });
   }
 });
+
+app.post("/api/posts", async(_req, res) => {
+    try {
+        const { title, description } = _req.body;
+
+        if(!title || typeof title !== "string") {
+            res.status(400).json({
+                message: "title wajib diisi"
+            });
+        }
+
+        const result = await pool.query(
+            "INSERT INTO post (title, description) VALUES($1, $2) RETURNING id, title, description", [title, description ?? null]
+        )
+
+        res.status(201).json({
+            message: "berhasil menambahkan kursus",
+            data: result.rows[0]
+        });
+    } catch(error) {
+        console.error('Gagal menambah post: ', error);
+        res.status(500).json({ message: "gagal menambah data posts" });
+    }
+})
 
 if(!process.env.VERCEL) {
     app.listen(port, () => {
